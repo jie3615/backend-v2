@@ -95,20 +95,29 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				// 查询bounty列表
-				Method:  http.MethodPost,
-				Path:    "/bounties",
-				Handler: bounty.ListBountiesHandler(serverCtx),
-			},
-			{
-				// 查询bounty详情
-				Method:  http.MethodGet,
-				Path:    "/detail",
-				Handler: bounty.DetailBountyHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.OIDCAuthMiddleware},
+			[]rest.Route{
+				{
+					// 查询bounty列表
+					Method:  http.MethodPost,
+					Path:    "/bounties",
+					Handler: bounty.ListBountiesHandler(serverCtx),
+				},
+				{
+					// 创建bounty
+					Method:  http.MethodPost,
+					Path:    "/bounty",
+					Handler: bounty.CreateBountyHandler(serverCtx),
+				},
+				{
+					// 查询bounty详情
+					Method:  http.MethodGet,
+					Path:    "/detail",
+					Handler: bounty.DetailBountyHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/api/bounty"),
 	)
 
@@ -387,7 +396,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		),
 		rest.WithPrefix("/api/share"),
 	)
-
 
 	server.AddRoutes(
 		rest.WithMiddlewares(

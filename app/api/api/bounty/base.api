@@ -230,4 +230,16 @@ type (
         ContactType    uint8  `json:"contact_type"` // 1:Email 2:Discord 3:Telegram
         ContactAddress string `json:"contact_address"`
     }
+
+    CreateBountyRequest {
+        ChainId uint64  `json:"chain_id"`
+        StartupId  uint64 `json:"startup_id"`
+        Title string `json:"title"`
+        TxHash string `json:"tx_hash"`
+    }
+
+    CreateBountyResponse {
+        Success bool `json:"success"`
+        Msg string `json:"msg"`
+    }
 )

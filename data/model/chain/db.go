@@ -34,3 +34,11 @@ func GetChainCompleteList(db *gorm.DB, chains *[]ChainBasicResponse) (err error)
 		}).Order("created_at DESC").Find(chains).Error
 	return
 }
+
+func GetChainContractByChainIdAndContractAddress(db *gorm.DB, chainId uint64, contractAddress string) (contract *ChainContract, err error) {
+	err = db.Where(ChainContract{
+		ChainID: chainId,
+		Address: contractAddress,
+	}).First(contract).Error
+	return
+}

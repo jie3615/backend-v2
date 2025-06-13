@@ -27,3 +27,15 @@ func GetBounty(db *gorm.DB, id uint64, bounty *Bounty) (err error) {
 		Preload("BountyPaymentTerms", "is_deleted = ?", "0").
 		First(bounty).Error
 }
+
+func GetBountyByTxHashAndChainId(db *gorm.DB, txHash string, chainId uint64, bounty *Bounty) (err error) {
+	return db.Debug().Table("bounty").Where("tx_hash = ? and chain_id = ?", txHash, chainId).First(bounty).Error
+}
+
+func UpdateBounty(db *gorm.DB, bounty *Bounty) (err error) {
+	return db.Debug().Table("bounty").Where("id = ?", bounty.ID).Updates(bounty).Error
+}
+
+func AddBounty(db *gorm.DB, bounty *Bounty) (err error) {
+	return db.Debug().Table("bounty").Create(bounty).Error
+}

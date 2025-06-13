@@ -1,6 +1,7 @@
 package bounty
 
 import (
+	"math/big"
 	"metaLand/data/model"
 	"metaLand/data/model/startup"
 	"time"
@@ -17,8 +18,8 @@ type Bounty struct {
 	ApplyCutoffDate     time.Time            `gorm:"apply_cutoff_date" json:"apply_cutoff_date"`
 	DiscussionLink      string               `gorm:"discussion_link" json:"discussion_link"`
 	DepositTokenSymbol  string               `gorm:"deposit_token_symbol" json:"deposit_token_symbol"`
-	ApplicantDeposit    int                  `gorm:"applicant_deposit" json:"applicant_deposit"`
-	FounderDeposit      int                  `gorm:"founder_deposit" json:"founder_deposit"`
+	ApplicantDeposit    big.Int              `gorm:"applicant_deposit" json:"applicant_deposit"`
+	FounderDeposit      big.Int              `gorm:"founder_deposit" json:"founder_deposit"`
 	Description         string               `gorm:"description" json:"description"`
 	PaymentMode         int                  `gorm:"payment_mode" json:"payment_mode"`
 	Status              int                  `gorm:"status" json:"status"`

@@ -40,6 +40,18 @@ type BountyInfoResponse struct {
 	TxHash                      string                `json:"tx_hash"`
 }
 
+type CreateBountyRequest struct {
+	ChainId   uint64 `json:"chain_id"`
+	StartupId uint64 `json:"startup_id"`
+	Title     string `json:"title"`
+	TxHash    string `json:"tx_hash"`
+}
+
+type CreateBountyResponse struct {
+	Success bool   `json:"success"`
+	Msg     string `json:"msg"`
+}
+
 type DetailRequest struct {
 	Id uint64 `form:"id"`
 }

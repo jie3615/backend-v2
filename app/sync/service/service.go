@@ -38,5 +38,6 @@ func New(ctx context.Context, cfg *config.Config) (*Service, error) {
 func (s *Service) Start() {
 	startup.NewTaskStartup(s.ctx).Start()
 	crontask.NewTask().Start()
+	bounty.NewTaskBountyFactory(s.ctx).Start()
 	bounty.NewTaskBounty(s.ctx).Start()
 }
