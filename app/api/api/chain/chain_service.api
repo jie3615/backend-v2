@@ -1,0 +1,14 @@
+syntax = "v1"
+
+import "./base.api"
+
+
+@server(
+    group: chain
+    prefix: chain
+)
+service metaLand {
+    @doc "获取链列表"
+    @handler GetChainList
+    get /list () returns (ChainListResponse)
+}

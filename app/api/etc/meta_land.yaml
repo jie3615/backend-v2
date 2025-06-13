@@ -1,0 +1,18 @@
+Name: metaLand
+Host: 0.0.0.0
+Port: 8888
+
+DB:
+  DataSource: ""
+
+JWT:
+  Secret: "123123"
+  Expired: 300
+
+Minio:
+  Bucket: ""
+
+Redis:
+  Host: ""
+  Password: ""
+  DB: 0

@@ -3,8 +3,247 @@
 
 package types
 
+import "time"
+
+type Base struct {
+	ID        uint64 `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	CreatedAt string `gorm:"column:created_at;autoCreateTime" json:"created_at"`
+	UpdatedAt string `gorm:"column:updated_at;autoUpdateTime" json:"updated_at"`
+	IsDeleted bool   `gorm:"column:is_deleted;default:false" json:"is_deleted"`
+}
+
+type Bounty struct {
+	ApplicantDeposit            int          `json:"applicants_deposit"`
+	ChainId                     uint64       `json:"chain_id"`
+	ComerId                     uint64       `json:"comer_id"`
+	CreatedAt                   string       `json:"created_at"`
+	DepositContractAddress      string       `json:"deposit_contract_address"`
+	DepositContractTokenDecimal int          `json:"deposit_contract_token_decimal"`
+	DepositContractTokenSymbol  string       `json:"deposit_contract_token_symbol"`
+	DiscussionLink              string       `json:"discussion_link"`
+	ExpiredTime                 string       `json:"expired_time"`
+	FounderDeposit              int          `json:"founder_deposit"`
+	Id                          uint64       `json:"id"`
+	IsLock                      int          `json:"is_lock"`
+	PaymentMode                 int          `json:"payment_mode"`
+	Reward                      BountyReward `json:"reward"`
+	Startup                     StartupBasic `json:"startup"`
+	StartupId                   uint64       `json:"startup_id"`
+	Status                      int          `json:"status"`
+	Title                       string       `json:"title"`
+	TxHash                      string       `json:"tx_hash"`
+}
+
+type BountyApplicant struct {
+	BountyId    uint64 `json:"bounty_id"`   // 赏金任务ID
+	ComerID     uint64 `json:"comer_id"`    // 申请人ID
+	ApplyAt     string `json:"apply_at"`    // 申请时间
+	RevokeAt    string `json:"revoke_at"`   // 撤销时间
+	ApproveAt   string `json:"approve_at"`  // 批准时间
+	QuitAt      string `json:"quit_at"`     // 退出时间
+	SubmitAt    string `json:"submit_at"`   // 提交时间
+	Status      int    `json:"status"`      // 申请状态
+	Description string `json:"description"` // 申请描述
+}
+
+type BountyComer struct {
+	Activation     bool                  `json:"activation"`
+	Address        string                `json:"address"`
+	Avatar         string                `json:"avatar"`
+	Banner         string                `json:"banner"`
+	CustomDomain   string                `json:"custom_domain"`
+	Id             int                   `json:"id"`
+	InvitationCode string                `json:"invitation_code"`
+	IsConnected    bool                  `json:"is_connected"`
+	Location       string                `json:"location"`
+	Name           string                `json:"name"`
+	Skills         []TagRelationResponse `json:"skills"`
+	TimeZone       string                `json:"time_zone"`
+}
+
+type BountyContact struct {
+	BountyId       uint64 `json:"bounty_id"`       // 赏金任务ID
+	ContactType    uint8  `json:"contact_type"`    // 联系方式类型
+	ContactAddress string `json:"contact_address"` // 联系地址
+}
+
+type BountyDepositRecord struct {
+	Amount    int                `json:"amount"`
+	BountyId  uint64             `json:"bounty_id"`
+	Comer     ComerBasicResponse `json:"comer"`
+	ComerId   uint64             `json:"comer_id"`
+	CreatedAt string             `json:"created_at"`
+	Id        uint64             `json:"id"`
+	Mode      int                `json:"mode"`
+	Status    int8               `json:"status"`
+	TxHash    string             `json:"tx_hash"`
+}
+
+type BountyPaymentPeriod struct {
+	BountyId     uint64 `json:"bounty_id"`     // 赏金任务ID（唯一索引）
+	PeriodType   int    `json:"period_type"`   // 周期类型
+	PeriodAmount uint64 `json:"period_amount"` // 周期数量
+	HoursPerDay  int    `json:"hours_per_day"` // 每日小时数
+	Token1Symbol string `json:"token1_symbol"` // 代币1符号
+	Token1Amount int    `json:"token1_amount"` // 代币1数量
+	Token2Symbol string `json:"token2_symbol"` // 代币2符号
+	Token2Amount int    `json:"token2_amount"` // 代币2数量
+	Target       string `json:"target"`        // 目标描述
+}
+
+type BountyPaymentTerms struct {
+	BountyId     uint64 `json:"bounty_id"`     // 关联的赏金任务ID
+	PaymentMode  int8   `json:"payment_mode"`  // 支付方式
+	Token1Symbol string `json:"token1_symbol"` // 第一种代币符号
+	Token1Amount int    `json:"token1_amount"` // 第一种代币数量
+	Token2Symbol string `json:"token2_symbol"` // 第二种代币符号
+	Token2Amount int    `json:"token2_amount"` // 第二种代币数量
+	Terms        string `json:"terms"`         // 支付条款详情
+	SeqNum       int    `json:"seq_num"`       // 排序序号
+	Status       int    `json:"status"`        // 状态
+}
+
+type BountyReward struct {
+	BountyId     uint64 `json:"bounty_id"`
+	Token1Symbol string `json:"token1_symbol"`
+	Token1Amount int    `json:"token1_amount"`
+	Token2Symbol string `json:"token2_symbol"`
+	Token2Amount int    `json:"token2_amount"`
+}
+
+type ChainBasicResponse struct {
+	ChainID        uint64          `json:"chain_id"` // 链ID（唯一索引）
+	Name           string          `json:"name"`     // 链名称
+	Logo           string          `json:"logo"`     // 链Logo
+	Status         int8            `json:"status"`   // 状态：1-正常，2-禁用
+	ChainContracts []ChainContract `json:"chain_contracts"`
+	ChainEndpoints []ChainEndpoint `json:"chain_endpoints"`
+}
+
+type ChainContract struct {
+	ChainID       uint64 `json:"chain_id"`        // 链ID
+	Address       string `json:"address"`         // 合约地址
+	Project       int8   `json:"project"`         // 项目类型：1-Startup, 2-Bounty, 3-Crowdfunding, 4-Gover
+	Type          int8   `json:"type"`            // 合约类型：1-工厂合约, 2-子合约
+	Version       string `json:"version"`         // 合约版本
+	ABI           string `json:"abi"`             // ABI JSON
+	CreatedTxHash string `json:"created_tx_hash"` // 创建交易哈希
+}
+
+type ChainEndpoint struct {
+	Protocol int8   `json:"protocol"` // 通信协议：1-rpc 2-wss
+	ChainID  uint64 `json:"chain_id"` // 链ID
+	URL      string `json:"url"`      // 节点URL
+	Status   int8   `json:"status"`   // 状态：1-正常 2-禁用
+}
+
+type ComerAccountResponse struct {
+	Avatar    string `json:"avatar"`
+	ComerId   int    `json:"comer_id"`
+	Id        int    `json:"id"`
+	IsLinked  bool   `json:"is_linked"`
+	IsPrimary bool   `json:"is_primary"`
+	Nickname  string `json:"nickname"`
+	Oin       string `json:"oin"`
+	Type      int    `json:"type"`
+}
+
+type ComerConnectedTotalResponse struct {
+	BeConnectComerTotal int `json:"be_connect_comer_total"`
+	ConnectComerTotal   int `json:"connect_comer_total"`
+	ConnectStartupTotal int `json:"connect_startup_total"`
+}
+
+type ComerEducationResponse struct {
+	ComerId     int    `json:"comer_id"`
+	GraduatedAt string `json:"graduated_at"`
+	Id          int    `json:"id"`
+	Major       string `json:"major"`
+	School      string `json:"school"`
+	StartDate   string `json:"start_date"`
+	EndDate     string `json:"end_date"`
+	Description string `json:"description"`
+	Level       int    `json:"level"`
+	Degree      string `json:"degree"`
+}
+
+type ComerInfo struct {
+	Bio     string `json:"bio"`
+	ComerId int    `json:"comer_id"`
+	Id      int    `json:"id"`
+}
+
+type ComerLanguageResponse struct {
+	ComerId  int    `json:"comer_id"`
+	Id       int    `json:"id"`
+	Language string `json:"language"`
+	Code     string `json:"code"`
+	Level    int    `json:"level"`
+	IsNative bool   `json:"is_native"`
+}
+
+type ComerSkillResponse struct {
+	ComerId     int    `json:"comer_id"`
+	Id          int    `json:"id"`
+	SkillName   string `json:"skill_name"`
+	Level       int    `json:"level"`
+	Years       int    `json:"years"`
+	Description string `json:"description"`
+}
+
+type ComerSocialResponse struct {
+	ComerId      int    `json:"comer_id"`
+	Id           int    `json:"id"`
+	PlatformName string `json:"platform_name"`
+	UserName     string `json:"user_name"`
+	PlatformId   string `json:"platform_id"`
+	IsVerified   bool   `json:"is_verified"`
+	Url          string `json:"url"`
+}
+
+type Contact struct {
+	ContactType    uint8  `json:"contact_type"` // 1:Email 2:Discord 3:Telegram
+	ContactAddress string `json:"contact_address"`
+}
+
 type FollowRelation struct {
 	ComerID uint64 `json:comerID`
+}
+
+type OauthAccountBindingInfo struct {
+	Linked      bool   `json:"linked"`
+	AccountType int    `json:"accountType"`
+	AccountId   uint64 `json:"accountId"`
+}
+
+type PostUpdate struct {
+	SourceType int    `json:"source_type"`
+	SourceID   uint64 `json:"source_id"`
+	ComerID    uint64 `json:"comer_id"`
+	Content    string `json:"content"`
+	TimeStamp  string `json:"time_stamp"` // post time
+}
+
+type SimpleStartupInfo struct {
+	Avatar  string `json:"avatar"`
+	Id      int    `json:"id"`
+	Name    string `json:"name"`
+	OnChain bool   `json:"on_chain"`
+}
+
+type SocialBookResponse struct {
+	Id           int                `json:"id"`
+	SocialTool   SocialToolResponse `json:"social_tool"`
+	SocialToolId int                `json:"social_tool_id"`
+	TargetId     int                `json:"target_id"`
+	Type         int                `json:"type"`
+	Value        string             `json:"value"`
+}
+
+type SocialToolResponse struct {
+	Id   int    `json:"id"`
+	Logo string `json:"logo"`
+	Name string `json:"name"`
 }
 
 type Startup struct {
@@ -23,6 +262,40 @@ type Startup struct {
 	ContractAudit        string `json:"contractAudit" db:"contract_audit"`
 }
 
+type StartupBasic struct {
+	Banner        string `json:"banner"`
+	ChainId       int    `json:"chain_id"`
+	ComerId       int    `json:"comer_id"`
+	ContractAudit string `json:"contract_audit"`
+	Id            uint64 `json:"id"`
+	IsConnected   bool   `json:"is_connected"`
+	Kyc           string `json:"kyc"`
+	Logo          string `json:"logo"`
+	Mission       string `json:"mission"`
+	Name          string `json:"name"`
+	OnChain       bool   `json:"on_chain"`
+	TxHash        string `json:"tx_hash"`
+	Type          int    `json:"type"`
+}
+
+type StartupCardResponse struct {
+	Banner        string                `json:"banner"`
+	ChainId       int                   `json:"chain_id"`
+	ComerId       int                   `json:"comer_id"`
+	ContractAudit string                `json:"contract_audit"`
+	Id            int                   `json:"id"`
+	IsConnected   bool                  `json:"is_connected"`
+	Kyc           string                `json:"kyc"`
+	Logo          string                `json:"logo"`
+	Mission       string                `json:"mission"`
+	Name          string                `json:"name"`
+	OnChain       bool                  `json:"on_chain"`
+	Socials       []SocialBookResponse  `json:"socials"`
+	Tags          []TagRelationResponse `json:"tags"`
+	TxHash        string                `json:"tx_hash"`
+	Type          int                   `json:"type"`
+}
+
 type StartupTeamMember struct {
 	ComerID      uint64 `json:"comerID"`
 	StartupID    uint64 `json:"startupID"`
@@ -37,6 +310,111 @@ type Tag struct {
 	IsIndex  bool   `json:"isIndex"`
 }
 
+type TagListResponse struct {
+	List []TagResponse `json:"list"`
+}
+
+type TagRelationResponse struct {
+	Id       int         `json:"id"`
+	Tag      TagResponse `json:"tag"`
+	TagId    int         `json:"tag_id"`
+	TargetId int         `json:"target_id"`
+	Type     int         `json:"type"`
+}
+
+type TagResponse struct {
+	Id       int    `json:"id"`
+	Name     string `json:"name"`
+	Category string `json:"category"`
+}
+
 type Wallet struct {
 	Address string `json:address`
+}
+
+
+type CheckStartupExistsRequest struct {
+	Name                 string `json:"name,omitempty"`                   // 项目名称（可选，与合约地址至少传一个）
+	TokenContractAddress string `json:"token_contract_address,omitempty"` // 代币合约地址（可选，与名称至少传一个）
+	IsDeleted            bool   `json:"is_deleted,omitempty"`             // 是否包含已删除记录（默认：false）
+}
+
+type CheckStartupExistsResponse struct {
+	Exists bool `json:"exists"` // 是否存在
+}
+
+type CreateStartupsRequest struct {
+	ComerID              uint64 `json:"comer_id"`               // 创建者ID
+	Name                 string `json:"name"`                   // 项目名称（必填）
+	Mode                 uint8  `json:"mode"`                   // 项目类型（0:NONE, 1:ESG, 2:NGO, 3:DAO, 4:COM）
+	Logo                 string `json:"logo"`                   // 项目LOGO地址
+	Cover                string `json:"cover"`                  // 项目封面地址
+	Mission              string `json:"mission"`                // 项目使命
+	TokenContractAddress string `json:"token_contract_address"` // 代币合约地址
+	Overview             string `json:"overview"`               // 项目简介（必填）
+	TxHash               string `json:"tx_hash"`                // 链上交易哈希
+	OnChain              bool   `json:"on_chain"`               // 是否上链
+	KYC                  string `json:"kyc"`                    // KYC文件地址
+	ContractAudit        string `json:"contract_audit"`         // 合约审计报告地址
+	Website              string `json:"website"`                // 官网地址
+	Discord              string `json:"discord"`                // Discord地址
+	Twitter              string `json:"twitter"`                // Twitter地址
+	Telegram             string `json:"telegram"`               // Telegram地址
+	Docs                 string `json:"docs"`                   // 文档地址
+	Email                string `json:"email"`                  // 邮箱
+	Facebook             string `json:"facebook"`               // Facebook地址
+	Medium               string `json:"medium"`                 // Medium地址
+	Linktree             string `json:"linktree"`               // Linktree地址
+	LaunchNetwork        int    `json:"launch_network"`         // 部署网络ID（链ID）
+	TokenName            string `json:"token_name"`             // 代币名称
+	TokenSymbol          string `json:"token_symbol"`           // 代币符号
+	TotalSupply          int64  `json:"total_supply"`           // 代币总供应量
+	PresaleStart         *time.Time `json:"presale_start"`          // 预售开始时间（可选，时间格式：RFC3339）
+	PresaleEnd           *time.Time `json:"presale_end"`            // 预售结束时间（可选，时间格式：RFC3339）
+	LaunchDate           *time.Time `json:"launch_date"`            // 上线时间（可选，时间格式：RFC3339）
+	TabSequence          string `json:"tab_sequence"`           // 标签页顺序（JSON字符串）
+	IsDeleted            bool   `json:"is_deleted"`             // 是否逻辑删除（默认：false）
+}
+
+type CreateStartupsResponse struct {
+	Suc bool   `json:"suc"` // 是否成功
+	Msg string `json:"msg"` // 提示信息（可选）
+}
+
+type GetStartupInfoRequest struct {
+	StartupId uint64 `form:"startupId"`
+}
+
+type ListStartupsRequest struct {
+	Limit     int    `json:"limit"`
+	Offset    int    `json:"offset"`
+	IsDeleted bool   `json:"isDeleted"`
+	Keyword   string `json:"keyword"`
+	Mode      uint8  `json:"mode"`
+}
+
+type ListStartupsResponse struct {
+	List  []*Startup `json:list`
+	Total int64      `json: total`
+}
+
+type StartupInfoResponse struct {
+	Code    int     `json:"code"`    // 状态码
+	Message string  `json:"message"` // 消息
+	Data    Startup `json:"data"`    // 项目详情
+}
+
+type UpdateStartupsRequest struct {
+	StartupId uint64 `json:"startup_id"` // 项目ID
+	Name      string `json:"name"`       // 项目名称（必填）
+	Mode      uint8  `json:"mode"`       // 项目类型（0:NONE, 1:ESG, 2:NGO, 3:DAO, 4:COM）
+	Logo      string `json:"logo"`       // 项目LOGO地址
+	Cover     string `json:"cover"`      // 项目封面地址
+	Overview  string `json:"overview"`   // 项目简介（必填）
+	Website   string `json:"website"`    // 官网地址
+}
+
+type UpdateStartupsResponse struct {
+	Suc bool   `json:"suc"` // 是否成功
+	Msg string `json:"msg"` // 提示信息（可选）
 }

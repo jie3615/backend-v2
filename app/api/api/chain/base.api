@@ -1,0 +1,31 @@
+type (
+    ChainListResponse {
+        List []ChainBasicResponse `json:"list"`
+    }
+
+    ChainBasicResponse {
+        ChainID uint64 `json:"chain_id"`  // 链ID（唯一索引）
+        Name string `json:"name"`         // 链名称
+        Logo string `json:"logo"`         // 链Logo
+        Status int8 `json:"status"`       // 状态：1-正常，2-禁用
+        ChainContracts []ChainContract `json:"chain_contracts"`
+        ChainEndpoints []ChainEndpoint `json:"chain_endpoints"`
+    }
+
+    ChainContract {
+        ChainID uint64 `json:"chain_id"`                 // 链ID
+        Address string `json:"address"`                  // 合约地址
+        Project int8 `json:"project"`                    // 项目类型：1-Startup, 2-Bounty, 3-Crowdfunding, 4-Gover
+        Type int8 `json:"type"`                          // 合约类型：1-工厂合约, 2-子合约
+        Version string `json:"version"`                  // 合约版本
+        ABI string `json:"abi"`                          // ABI JSON
+        CreatedTxHash string `json:"created_tx_hash"`    // 创建交易哈希
+    }
+
+    ChainEndpoint {
+        Protocol int8 `json:"protocol"`  // 通信协议：1-rpc 2-wss
+        ChainID uint64 `json:"chain_id"` // 链ID
+        URL string `json:"url"`          // 节点URL
+        Status int8 `json:"status"`      // 状态：1-正常 2-禁用
+    }
+)

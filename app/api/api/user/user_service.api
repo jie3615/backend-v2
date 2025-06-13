@@ -1,0 +1,225 @@
+syntax = "v1"
+
+import "./base.api"
+
+
+@server(
+    group: comer
+    prefix: api/comer
+    middleware: OIDCAuthMiddleware
+)
+service metaLand {
+
+    @doc "获取用户信息" 
+    @handler GetComer
+    get / returns (ComerResponse)
+
+    @doc "更新用户信息"
+    @handler UpdateComerInfo
+    put / (UpdateComerInfoRequest) returns (ComerMessageResponse)
+
+    @doc "解绑用户账号"
+    @handler UnlinkOauthByComerAccountId
+    delete /accounts/:comer_account_id (UnlinkOauthByComerAccountIdRequest) returns (ComerMessageResponse)
+
+    @doc "更新用户简介"
+    @handler UpdateComerInfoBio
+    put /bio (UpdateComerInfoBioRequest) returns (ComerMessageResponse)
+
+    @doc "获取用户详情"
+    @handler GetComerInfoDetail
+    get /detail returns (ComerInfoDetailResponse)
+
+    @doc "绑定用户教育经历"
+    @handler BindComerEducations
+    put /educations (BindComerEducationsRequest) returns (ComerMessageResponse)
+
+    @doc "更新用户教育经历"
+    @handler UpdateComerEducation
+    post /educations (UpdateComerEducationRequest) returns (ComerMessageResponse)
+
+    @doc "解绑用户教育经历"
+    @handler UnbindComerEducations
+    delete /educations/:comer_education_id (UnbindComerEducationsRequest) returns (ComerMessageResponse)
+
+    @doc "获取用户邀请人数"
+    @handler GetComerInvitationCount
+    get /invitation-count returns (ComerInvitationCountResponse)
+
+    @doc "获取用户邀请记录"
+    @handler GetComerInvitationRecords
+    get /invitation-records returns (ComerPageData)
+
+    @doc "绑定用户语言"
+    @handler BindComerLanguages
+    put /languages (BindComerLanguagesRequest) returns (ComerMessageResponse)
+
+    @doc "更新用户语言"
+    @handler UpdateComerLanguages
+    post /languages/:comer_language_id (UpdateComerLanguagesRequest) returns (ComerMessageResponse)
+
+    @doc "解绑用户语言"
+    @handler UnbindComerLanguages
+    delete /languages/:comer_language_id (UnbindComerLanguagesRequest) returns (ComerMessageResponse)
+
+    @doc "获取用户加入和关注的创业公司"
+    @handler GetComerJoinedAndFollowedStartups
+    get /related-startups  returns (StartupListResponse)
+
+    @doc "绑定用户技能"
+    @handler BindComerSkills
+    put /skills (BindComerSkillsRequest) returns (ComerMessageResponse)
+
+    @doc "更新用户技能"
+    @handler UpdateComerSkills
+    post /skills (UpdateComerSkillsRequest) returns (ComerMessageResponse)
+
+    @doc "解绑用户技能"
+    @handler UnbindComerSkills
+    delete /skills/:comer_skill_id (UnbindComerSkillsRequest) returns (ComerMessageResponse)
+
+    @doc "绑定用户社交"
+    @handler BindComerSocials
+    put /socials (BindComerSocialsRequest) returns (ComerMessageResponse)
+
+    @doc "更新用户社交"
+    @handler UpdateComerSocials
+    post /socials (UpdateComerSocialsRequest) returns (ComerMessageResponse)
+
+    @doc "解绑用户社交"
+    @handler UnbindComerSocials
+    delete /socials/:comer_social_id (UnbindComerSocialsRequest) returns (ComerMessageResponse)
+}
+
+@server(
+    group: comers
+    prefix: api/comers
+    middleware: OIDCAuthMiddleware
+)
+
+service metaLand {
+
+    @doc "设置用户自定义域名"
+    @handler SetUserCustomDomain
+    put /domains/:custom_domain (SetUserCustomDomainRequest) returns (ComersMessageResponse)
+
+    @doc "通过地址获取用户"
+    @handler GetComerByAddress
+    get /address/:address (GetComerByAddressRequest) returns (ComerBasicResponse)
+
+    @doc "查询自定义域名是否存在"
+    @handler GetUserCustomDomainExistence
+    get /domains/existence/:custom_domain (GetUserCustomDomainExistenceRequest) returns (IsExistResponse)
+
+    @doc "通过自定义域名获取用户"
+    @handler GetUserCustomDomain
+    get /domains/:custom_domain (GetUserCustomDomainRequest) returns (ComersInfoDetailResponse)
+
+    @doc "校验用户是否可添加资料"
+    @handler VerifyComerAddProfile
+    get /verify/profile returns (ThirdPartyVerifyResponse)
+
+    @doc "通过comer_id获取用户"
+    @handler GetComerByComerId
+    get /:comer_id (GetComerByComerIdRequest) returns (ComersInfoDetailResponse)
+
+    @doc "获取被该用户连接的comer列表"
+    @handler GetComerBeConnectComersByComerId
+    get /:comer_id/be_connect/comers (GetComerBeConnectComersByComerIdRequest) returns (ComersPageData)
+
+    @doc "连接某个comer"
+    @handler ConnectComer
+    post /:comer_id/connect (ConnectComerRequest) returns (ComersMessageResponse)
+
+    @doc "取消连接某个comer"
+    @handler UnconnectComer
+    delete /:comer_id/connect (UnconnectComerRequest) returns (ComersMessageResponse)
+
+    @doc "获取该用户连接的comer列表"
+    @handler GetComerConnectComersByComerId
+    get /:comer_id/connect/comers (GetComerConnectComersByComerIdRequest) returns (ComersPageData)
+
+    @doc "获取该用户连接的startup列表"
+    @handler GetStartupConnectByComerId
+    get /:comer_id/connect/startups (GetComerConnectStartupsByComerIdRequest) returns (ComersPageData)
+
+    @doc "获取该用户的连接状态"
+    @handler ConnectedComer
+    get /:comer_id/connected (GetConnectedComerRequest) returns (IsConnectedResponse)
+
+    @doc "通过comer_id获取用户详情"
+    @handler GetComerInfoDetailByComerId
+    get /:comer_id/detail (GetComerInfoDetailByComerIdRequest) returns (ComersInfoDetailResponse)
+
+    @doc "获取该用户参与的项目数量"
+    @handler GetComerParticipatedCountByComerId
+    get /:comer_id/participated/count (GetComerParticipatedCountByComerIdRequest) returns (ProjectCountResponse)
+
+    @doc "获取该用户发布的项目数量"
+    @handler GetComerPostedCountByComerId
+    get /:comer_id/posted/count (GetComerPostedCountByComerIdRequest) returns (ProjectCountResponse)
+}
+
+@server(
+    group: languages
+    prefix: api/languages
+    middleware: OIDCAuthMiddleware
+)
+service metaLand {
+
+    @doc "获取语言列表"
+    @handler GetLanguages
+    get / returns (LanguageResponse)
+}
+
+@server(
+    group: share
+    prefix: api/share
+    middleware: OIDCAuthMiddleware
+)
+service metaLand {
+
+    @doc "设置分享"
+    @handler SetShare
+    put / returns (ShareSetResponse)
+
+     @doc "获取分享"
+    @handler GetSharePageHtml
+    get /:share_code returns (string)
+}
+
+@server(
+    group: authorizations
+    prefix: api/authorizations
+    middleware: GuestAuthorizationMiddleware
+)
+service metaLand {
+
+    @doc "Github 授权登录"  
+    @handler GithubOauth
+    post /github returns (JwtAuthorizationResponse)
+
+    @doc "Google 授权登录"
+    @handler GoogleOauth
+    post /google returns (JwtAuthorizationResponse)
+
+    @doc "钱包地址登录"
+    @handler LoginByWalletAddress
+    post /wallet (EthLoginRequest) returns (ComerLoginResponse)
+
+    @doc "获取钱包地址登录用的 nonce"
+    @handler GetNonceByAddress
+    get /:wallet_address/nonce (GetNonceByAddressRequest) returns (WalletNonceResponse)
+}
+
+@server(
+    group: tags
+    prefix: api/tags
+    middleware: OIDCAuthMiddleware
+)
+service metaLand {
+
+    @doc "根据类型获取标签列表"
+    @handler GetTagsByTagType
+    get /:type (GetTagsByTagTypeRequest) returns (ListResponse)
+}

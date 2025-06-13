@@ -1,0 +1,22 @@
+project:
+  name: "MetaLandSync"
+
+monitor:
+  pprof_enable: false
+  pprof_port: 6060
+
+log:
+  compress: false
+  leep_days: 7
+  level: "info"
+  mode: "console"
+  path: "logs"
+  service_name: "MetaLandSync"
+
+db:
+  dsn: ""
+
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  db: 0

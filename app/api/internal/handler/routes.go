@@ -6,25 +6,409 @@ package handler
 import (
 	"net/http"
 
+	authorizations "metaLand/app/api/internal/handler/authorizations"
+	bounty "metaLand/app/api/internal/handler/bounty"
+	chain "metaLand/app/api/internal/handler/chain"
+	comer "metaLand/app/api/internal/handler/comer"
+	comers "metaLand/app/api/internal/handler/comers"
+	languages "metaLand/app/api/internal/handler/languages"
+	share "metaLand/app/api/internal/handler/share"
 	startup "metaLand/app/api/internal/handler/startup"
+	tags "metaLand/app/api/internal/handler/tags"
 	"metaLand/app/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+
 	server.AddRoutes(
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.OIDCAuthMiddleware},
 			[]rest.Route{
+				{
+					// 判断项目是否存在
+					Method:  http.MethodGet,
+					Path:    "/check-exists",
+					Handler: startup.CheckStartupExistsHandler(serverCtx),
+				},
+				{
+					// 创建项目
+					Method:  http.MethodPost,
+					Path:    "/create-startup",
+					Handler: startup.CreateStartupsHandler(serverCtx),
+				},
+				{
+					// 获取项目详情
+					Method:  http.MethodGet,
+					Path:    "/getInfo",
+					Handler: startup.GetStartupInfoHandler(serverCtx),
+				},
 				{
 					// 查询项目列表
 					Method:  http.MethodGet,
 					Path:    "/startups",
 					Handler: startup.ListStartupsHandler(serverCtx),
 				},
+				{
+					// 更新项目
+					Method:  http.MethodPost,
+					Path:    "/update-startup",
+					Handler: startup.UpdateStartupsHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/startup"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.GuestAuthorizationMiddleware},
+			[]rest.Route{
+				{
+					// 获取钱包地址登录用的 nonce
+					Method:  http.MethodGet,
+					Path:    "/:wallet_address/nonce",
+					Handler: authorizations.GetNonceByAddressHandler(serverCtx),
+				},
+				{
+					// Github 授权登录
+					Method:  http.MethodPost,
+					Path:    "/github",
+					Handler: authorizations.GithubOauthHandler(serverCtx),
+				},
+				{
+					// Google 授权登录
+					Method:  http.MethodPost,
+					Path:    "/google",
+					Handler: authorizations.GoogleOauthHandler(serverCtx),
+				},
+				{
+					// 钱包地址登录
+					Method:  http.MethodPost,
+					Path:    "/wallet",
+					Handler: authorizations.LoginByWalletAddressHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/authorizations"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.OIDCAuthMiddleware},
+			[]rest.Route{
+				{
+					// 查询bounty列表
+					Method:  http.MethodPost,
+					Path:    "/bounties",
+					Handler: bounty.ListBountiesHandler(serverCtx),
+				},
+				{
+					// 创建bounty
+					Method:  http.MethodPost,
+					Path:    "/bounty",
+					Handler: bounty.CreateBountyHandler(serverCtx),
+				},
+				{
+					// 查询bounty详情
+					Method:  http.MethodGet,
+					Path:    "/detail",
+					Handler: bounty.DetailBountyHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/bounty"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				// 获取链列表
+				Method:  http.MethodGet,
+				Path:    "/list",
+				Handler: chain.GetChainListHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/chain"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.OIDCAuthMiddleware},
+			[]rest.Route{
+				{
+					// 获取用户信息
+					Method:  http.MethodGet,
+					Path:    "/",
+					Handler: comer.GetComerHandler(serverCtx),
+				},
+				{
+					// 更新用户信息
+					Method:  http.MethodPut,
+					Path:    "/",
+					Handler: comer.UpdateComerInfoHandler(serverCtx),
+				},
+				{
+					// 解绑用户账号
+					Method:  http.MethodDelete,
+					Path:    "/accounts/:comer_account_id",
+					Handler: comer.UnlinkOauthByComerAccountIdHandler(serverCtx),
+				},
+				{
+					// 更新用户简介
+					Method:  http.MethodPut,
+					Path:    "/bio",
+					Handler: comer.UpdateComerInfoBioHandler(serverCtx),
+				},
+				{
+					// 获取用户详情
+					Method:  http.MethodGet,
+					Path:    "/detail",
+					Handler: comer.GetComerInfoDetailHandler(serverCtx),
+				},
+				{
+					// 绑定用户教育经历
+					Method:  http.MethodPut,
+					Path:    "/educations",
+					Handler: comer.BindComerEducationsHandler(serverCtx),
+				},
+				{
+					// 更新用户教育经历
+					Method:  http.MethodPost,
+					Path:    "/educations",
+					Handler: comer.UpdateComerEducationHandler(serverCtx),
+				},
+				{
+					// 解绑用户教育经历
+					Method:  http.MethodDelete,
+					Path:    "/educations/:comer_education_id",
+					Handler: comer.UnbindComerEducationsHandler(serverCtx),
+				},
+				{
+					// 获取用户邀请人数
+					Method:  http.MethodGet,
+					Path:    "/invitation-count",
+					Handler: comer.GetComerInvitationCountHandler(serverCtx),
+				},
+				{
+					// 获取用户邀请记录
+					Method:  http.MethodGet,
+					Path:    "/invitation-records",
+					Handler: comer.GetComerInvitationRecordsHandler(serverCtx),
+				},
+				{
+					// 绑定用户语言
+					Method:  http.MethodPut,
+					Path:    "/languages",
+					Handler: comer.BindComerLanguagesHandler(serverCtx),
+				},
+				{
+					// 更新用户语言
+					Method:  http.MethodPost,
+					Path:    "/languages/:comer_language_id",
+					Handler: comer.UpdateComerLanguagesHandler(serverCtx),
+				},
+				{
+					// 解绑用户语言
+					Method:  http.MethodDelete,
+					Path:    "/languages/:comer_language_id",
+					Handler: comer.UnbindComerLanguagesHandler(serverCtx),
+				},
+				{
+					// 获取用户加入和关注的创业公司
+					Method:  http.MethodGet,
+					Path:    "/related-startups",
+					Handler: comer.GetComerJoinedAndFollowedStartupsHandler(serverCtx),
+				},
+				{
+					// 绑定用户技能
+					Method:  http.MethodPut,
+					Path:    "/skills",
+					Handler: comer.BindComerSkillsHandler(serverCtx),
+				},
+				{
+					// 更新用户技能
+					Method:  http.MethodPost,
+					Path:    "/skills",
+					Handler: comer.UpdateComerSkillsHandler(serverCtx),
+				},
+				{
+					// 解绑用户技能
+					Method:  http.MethodDelete,
+					Path:    "/skills/:comer_skill_id",
+					Handler: comer.UnbindComerSkillsHandler(serverCtx),
+				},
+				{
+					// 绑定用户社交
+					Method:  http.MethodPut,
+					Path:    "/socials",
+					Handler: comer.BindComerSocialsHandler(serverCtx),
+				},
+				{
+					// 更新用户社交
+					Method:  http.MethodPost,
+					Path:    "/socials",
+					Handler: comer.UpdateComerSocialsHandler(serverCtx),
+				},
+				{
+					// 解绑用户社交
+					Method:  http.MethodDelete,
+					Path:    "/socials/:comer_social_id",
+					Handler: comer.UnbindComerSocialsHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/comer"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.OIDCAuthMiddleware},
+			[]rest.Route{
+				{
+					// 通过comer_id获取用户
+					Method:  http.MethodGet,
+					Path:    "/:comer_id",
+					Handler: comers.GetComerByComerIdHandler(serverCtx),
+				},
+				{
+					// 获取被该用户连接的comer列表
+					Method:  http.MethodGet,
+					Path:    "/:comer_id/be_connect/comers",
+					Handler: comers.GetComerBeConnectComersByComerIdHandler(serverCtx),
+				},
+				{
+					// 连接某个comer
+					Method:  http.MethodPost,
+					Path:    "/:comer_id/connect",
+					Handler: comers.ConnectComerHandler(serverCtx),
+				},
+				{
+					// 取消连接某个comer
+					Method:  http.MethodDelete,
+					Path:    "/:comer_id/connect",
+					Handler: comers.UnconnectComerHandler(serverCtx),
+				},
+				{
+					// 获取该用户连接的comer列表
+					Method:  http.MethodGet,
+					Path:    "/:comer_id/connect/comers",
+					Handler: comers.GetComerConnectComersByComerIdHandler(serverCtx),
+				},
+				{
+					// 获取该用户连接的startup列表
+					Method:  http.MethodGet,
+					Path:    "/:comer_id/connect/startups",
+					Handler: comers.GetStartupConnectByComerIdHandler(serverCtx),
+				},
+				{
+					// 获取该用户的连接状态
+					Method:  http.MethodGet,
+					Path:    "/:comer_id/connected",
+					Handler: comers.ConnectedComerHandler(serverCtx),
+				},
+				{
+					// 通过comer_id获取用户详情
+					Method:  http.MethodGet,
+					Path:    "/:comer_id/detail",
+					Handler: comers.GetComerInfoDetailByComerIdHandler(serverCtx),
+				},
+				{
+					// 获取该用户参与的项目数量
+					Method:  http.MethodGet,
+					Path:    "/:comer_id/participated/count",
+					Handler: comers.GetComerParticipatedCountByComerIdHandler(serverCtx),
+				},
+				{
+					// 获取该用户发布的项目数量
+					Method:  http.MethodGet,
+					Path:    "/:comer_id/posted/count",
+					Handler: comers.GetComerPostedCountByComerIdHandler(serverCtx),
+				},
+				{
+					// 通过地址获取用户
+					Method:  http.MethodGet,
+					Path:    "/address/:address",
+					Handler: comers.GetComerByAddressHandler(serverCtx),
+				},
+				{
+					// 设置用户自定义域名
+					Method:  http.MethodPut,
+					Path:    "/domains/:custom_domain",
+					Handler: comers.SetUserCustomDomainHandler(serverCtx),
+				},
+				{
+					// 通过自定义域名获取用户
+					Method:  http.MethodGet,
+					Path:    "/domains/:custom_domain",
+					Handler: comers.GetUserCustomDomainHandler(serverCtx),
+				},
+				{
+					// 查询自定义域名是否存在
+					Method:  http.MethodGet,
+					Path:    "/domains/existence/:custom_domain",
+					Handler: comers.GetUserCustomDomainExistenceHandler(serverCtx),
+				},
+				{
+					// 校验用户是否可添加资料
+					Method:  http.MethodGet,
+					Path:    "/verify/profile",
+					Handler: comers.VerifyComerAddProfileHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/comers"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.OIDCAuthMiddleware},
+			[]rest.Route{
+				{
+					// 获取语言列表
+					Method:  http.MethodGet,
+					Path:    "/",
+					Handler: languages.GetLanguagesHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/languages"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.OIDCAuthMiddleware},
+			[]rest.Route{
+				{
+					// 设置分享
+					Method:  http.MethodPut,
+					Path:    "/",
+					Handler: share.SetShareHandler(serverCtx),
+				},
+				{
+					// 获取分享
+					Method:  http.MethodGet,
+					Path:    "/:share_code",
+					Handler: share.GetSharePageHtmlHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/share"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.OIDCAuthMiddleware},
+			[]rest.Route{
+				{
+					// 根据类型获取标签列表
+					Method:  http.MethodGet,
+					Path:    "/:type",
+					Handler: tags.GetTagsByTagTypeHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/tags"),
 	)
 }

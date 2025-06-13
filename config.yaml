@@ -1,6 +1,0 @@
-Log:
-  ServiceName: "metaland-main"
-  Mode: "file"
-  Path: "logs"
-  Level: "debug"
-  KeepDays: 30

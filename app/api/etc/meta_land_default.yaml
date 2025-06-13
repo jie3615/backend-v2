@@ -1,0 +1,18 @@
+Name: metaLand
+Host: 0.0.0.0
+Port: 9101
+
+DB:
+  DataSource: "root:mdw19921129#@tcp(127.0.0.1:3306)/metaland?charset=utf8mb4&parseTime=True&loc=Local"
+
+JWT:
+  Secret: "123123"
+  Expired: 300
+
+Minio:
+  Bucket: ""
+
+Redis:
+  Host: "127.0.0.1:6379"
+  Password: ""
+  DB: 0  

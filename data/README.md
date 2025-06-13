@@ -4,28 +4,6 @@
 ## 目录结构
 ```text
 /data
-├── domain/                 # 领域层：包含所有业务领域的核心逻辑
-│   ├── auth/              # 认证授权领域
-│   │   ├── social/        # 社交应用认证（企业微信等）
-│   │   └── oidc/          # OIDC认证
-│   ├── customer/          # 客户领域
-│   │   ├── contact/       # 客户联系方式
-│   │   ├── profile/       # 客户画像
-│   │   └── group/         # 客户分组
-│   ├── distribution/      # 分销领域
-│   │   ├── task/         # 分销任务
-│   │   ├── distributor/  # 分销员
-│   │   └── commission/   # 佣金规则
-│   ├── marketing/        # 营销领域
-│   │   ├── crowd/        # 人群运营
-│   │   ├── tag/          # 标签管理
-│   │   ��── qrcode/       # 渠道码
-│   ├── scrm/             # 社交CRM领域
-│   │   ├── wework/       # 企业微信集成
-│   │   └── message/      # 消息管理
-│   └── insight/          # 数据洞察领域
-│       ├── analysis/     # 数据分析
-│       └── report/       # 报表
 ├── repository/           # 仓储层：负责数据持久化
 │   ├── model/           # 数据模型定义
 │   │   ├── crm/        # 业务库模型

@@ -3,15 +3,15 @@
 
 package types
 
-type ListStartupsRequest struct {
-	Limit     int    `json:"limit"`
-	Offset    int    `json:"offset"`
-	IsDeleted bool   `json:"isDeleted"`
-	Keyword   string `json:"keyword"`
-	Mode      uint8  `json:"mode"`
-}
-
-type ListStartupsResponse struct {
-	List  []*Startup `json:list`
-	Total int        `json: total`
-}
+//type ListStartupsRequest struct {
+//	Limit     int    `json:"limit"`
+//	Offset    int    `json:"offset"`
+//	IsDeleted bool   `json:"isDeleted"`
+//	Keyword   string `json:"keyword"`
+//	Mode      uint8  `json:"mode"`
+//}
+//
+//type ListStartupsResponse struct {
+//	List  []*Startup `json:list`
+//	Total int64      `json: total`
+//}

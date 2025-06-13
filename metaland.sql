@@ -16,6 +16,7 @@
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+SET GLOBAL sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- ----------------------------
 -- Table structure for bounty
@@ -232,6 +233,80 @@ CREATE TABLE `comer_account` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `comer_account_oin_uindex` (`oin`),
   KEY `comer_account_comer_id_index` (`comer_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for comer_education
+-- ----------------------------
+DROP TABLE IF EXISTS `comer_education`;
+CREATE TABLE `comer_education` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `comer_id` bigint NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `school` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '学校名称',
+  `degree` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '学位',
+  `major` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '专业',
+  `start_date` date DEFAULT NULL COMMENT '开始日期',
+  `end_date` date DEFAULT NULL COMMENT '结束日期',
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '描述',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除',
+  PRIMARY KEY (`id`),
+  KEY `comer_education_comer_id_index` (`comer_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for comer_skill
+-- ----------------------------
+DROP TABLE IF EXISTS `comer_skill`;
+CREATE TABLE `comer_skill` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `comer_id` bigint NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `skill_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '技能名称',
+  `level` tinyint NOT NULL DEFAULT '0' COMMENT '熟练度(1-5)',
+  `years` int NOT NULL DEFAULT '0' COMMENT '使用年限',
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '描述',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除',
+  PRIMARY KEY (`id`),
+  KEY `comer_skill_comer_id_index` (`comer_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for comer_social
+-- ----------------------------
+DROP TABLE IF EXISTS `comer_social`;
+CREATE TABLE `comer_social` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `comer_id` bigint NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `platform` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '平台(twitter/discord/telegram等)',
+  `username` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '用户名',
+  `url` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '链接',
+  `is_verified` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否认证',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `comer_social_platform_username_index` (`comer_id`, `platform`, `username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Table structure for comer_language
+-- ---------------------------- 
+DROP TABLE IF EXISTS `comer_language`;
+CREATE TABLE `comer_language` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `comer_id` bigint NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `language` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '语言',
+  `code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '语言代码',
+  `level` tinyint NOT NULL DEFAULT '0' COMMENT '熟练度(1-5)',
+  `is_native` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否母语',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `comer_language_comer_id_language_index` (`comer_id`, `language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------

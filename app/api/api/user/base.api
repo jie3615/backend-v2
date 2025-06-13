@@ -1,0 +1,461 @@
+syntax = "v1"
+type (
+    // 通用基础
+    Base {
+        ID        uint64 `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+        CreatedAt string `gorm:"column:created_at;autoCreateTime" json:"created_at"`
+        UpdatedAt string `gorm:"column:updated_at;autoUpdateTime" json:"updated_at"`
+        IsDeleted bool   `gorm:"column:is_deleted;default:false" json:"is_deleted"`
+    }
+
+    // 用户分页
+    ComerPageData {
+        List  []interface{} `json:"list"`
+        Page  int           `json:"page"`
+        Size  int           `json:"size"`
+        Total int           `json:"total"`
+    }
+
+    ComersPageData {
+        List  []interface{} `json:"list"`
+        Page  int           `json:"page"`
+        Size  int           `json:"size"`
+        Total int           `json:"total"`
+    }
+
+    // 用户相关
+    ComerResponse {
+        Activation     bool   `json:"activation"`
+        Address        string `json:"address"`
+        Avatar         string `json:"avatar"`
+        Banner         string `json:"banner"`
+        CustomDomain   string `json:"custom_domain"`
+        Id             int    `json:"id"`
+        InvitationCode string `json:"invitation_code"`
+        IsConnected    bool   `json:"is_connected"`
+        IsSeted        bool   `json:"is_seted"`
+        Location       string `json:"location"`
+        Name           string `json:"name"`
+        TimeZone       string `json:"time_zone"`
+    }
+
+    ComerMessageResponse {
+        Message string `json:"message"`
+    }
+
+    ComersMessageResponse {
+        Message string `json:"message"`
+    }
+
+    ComerInfoDetailResponse {
+        Accounts       []ComerAccountResponse      `json:"accounts"`
+        Activation     bool                        `json:"activation"`
+        Address        string                      `json:"address"`
+        Avatar         string                      `json:"avatar"`
+        Banner         string                      `json:"banner"`
+        ConnectedTotal ComerConnectedTotalResponse `json:"connected_total"`
+        CustomDomain   string                      `json:"custom_domain"`
+        Educations     []ComerEducationResponse    `json:"educations"`
+        Id             int                         `json:"id"`
+        Info           ComerInfo                   `json:"info"`
+        InvitationCode string                      `json:"invitation_code"`
+        IsConnected    bool                        `json:"is_connected"`
+        Languages      []ComerLanguageResponse     `json:"languages"`
+        Location       string                      `json:"location"`
+        Name           string                      `json:"name"`
+        Skills         []ComerSkillResponse       `json:"skills"`
+        Socials        []ComerSocialResponse       `json:"socials"`
+        TimeZone       string                      `json:"time_zone"`
+    }
+
+    ComersInfoDetailResponse {
+        Accounts       []ComerAccountResponse      `json:"accounts"`
+        Activation     bool                        `json:"activation"`
+        Address        string                      `json:"address"`
+        Avatar         string                      `json:"avatar"`
+        Banner         string                      `json:"banner"`
+        ConnectedTotal ComerConnectedTotalResponse `json:"connected_total"`
+        CustomDomain   string                      `json:"custom_domain"`
+        Educations     []ComerEducationResponse    `json:"educations"`
+        Id             int                         `json:"id"`
+        Info           ComerInfo                   `json:"info"`
+        InvitationCode string                      `json:"invitation_code"`
+        IsConnected    bool                        `json:"is_connected"`
+        Languages      []ComerLanguageResponse     `json:"languages"`
+        Location       string                      `json:"location"`
+        Name           string                      `json:"name"`
+        Skills         []ComerSkillResponse       `json:"skills"`
+        Socials        []ComerSocialResponse       `json:"socials"`
+        TimeZone       string                      `json:"time_zone"`
+    }
+
+    ComerAccountResponse {
+        Avatar    string `json:"avatar"`
+        ComerId   int    `json:"comer_id"`
+        Id        int    `json:"id"`
+        IsLinked  bool   `json:"is_linked"`
+        IsPrimary bool   `json:"is_primary"`
+        Nickname  string `json:"nickname"`
+        Oin       string `json:"oin"`
+        Type      int    `json:"type"`
+    }
+
+    ComerConnectedTotalResponse {
+        BeConnectComerTotal int `json:"be_connect_comer_total"`
+        ConnectComerTotal   int `json:"connect_comer_total"`
+        ConnectStartupTotal int `json:"connect_startup_total"`
+    }
+
+    ComerEducationResponse {
+        ComerId     int    `json:"comer_id"`
+        GraduatedAt string `json:"graduated_at"`
+        Id          int    `json:"id"`
+        Major       string `json:"major"`
+        School      string `json:"school"`
+        StartDate   string `json:"start_date"`
+        EndDate     string `json:"end_date"`
+        Description string `json:"description"`
+        Level       int    `json:"level"`
+        Degree      string `json:"degree"`
+    }
+
+    ComerInfo {
+        Bio     string `json:"bio"`
+        ComerId int    `json:"comer_id"`
+        Id      int    `json:"id"`
+    }
+
+    ComerLanguageResponse {
+        ComerId    int      `json:"comer_id"`
+        Id         int      `json:"id"`
+        Language   string `json:"language"`
+        Code       string `json:"code"`
+        Level      int      `json:"level"`
+        IsNative   bool     `json:"is_native"`
+    }
+
+    ComerSkillResponse {
+        ComerId int    `json:"comer_id"`
+        Id     int    `json:"id"`
+        SkillName   string `json:"skill_name"`
+        Level  int    `json:"level"`
+        Years  int    `json:"years"`
+        Description string `json:"description"`
+    }
+
+    ComerSocialResponse {
+        ComerId int    `json:"comer_id"`
+        Id     int    `json:"id"`
+        PlatformName string `json:"platform_name"`
+        UserName     string `json:"user_name"`
+        PlatformId   string `json:"platform_id"`
+        IsVerified   bool   `json:"is_verified"`
+        Url          string `json:"url"`
+    }
+
+    TagRelationResponse {
+        Id       int        `json:"id"`
+        Tag      TagResponse `json:"tag"`
+        TagId    int        `json:"tag_id"`
+        TargetId int        `json:"target_id"`
+        Type     int        `json:"type"`
+    }
+
+    TagResponse {
+        Id       int    `json:"id"`
+        Name     string `json:"name"`
+        Category string `json:"category"`
+    }
+
+    TagListResponse {
+        List []TagResponse `json:"list"`
+    }
+
+    ComerInvitationCountResponse {
+        ActivatedTotal int `json:"activated_total"`
+        InactiveTotal  int `json:"inactive_total"`
+    }
+
+    StartupListResponse {
+        List  []SimpleStartupInfo `json:"list"`
+        Total int                 `json:"total"`
+    }
+
+    SimpleStartupInfo {
+        Avatar  string `json:"avatar"`
+        Id      int    `json:"id"`
+        Name    string `json:"name"`
+        OnChain bool   `json:"on_chain"`
+    }
+
+    ComerBasicResponse {
+        Activation     bool   `json:"activation"`
+        Address        string `json:"address"`
+        Avatar         string `json:"avatar"`
+        Banner         string `json:"banner"`
+        CustomDomain   string `json:"custom_domain"`
+        Id             int    `json:"id"`
+        InvitationCode string `json:"invitation_code"`
+        IsConnected    bool   `json:"is_connected"`
+        Location       string `json:"location"`
+        Name           string `json:"name"`
+        TimeZone       string `json:"time_zone"`
+    }
+
+    IsExistResponse {
+        IsExist bool `json:"is_exist"`
+    }
+
+    ThirdPartyVerifyResponse {
+        Verify bool `json:"verify"`
+    }
+
+    IsConnectedResponse {
+        IsConnected bool `json:"is_connected"`
+    }
+
+    ProjectCountResponse {
+        BountyCount        int `json:"bounty_count"`
+        CrowdfundingCount  int `json:"crowdfunding_count"`
+        GovernanceCount    int `json:"governance_count"`
+        OtherDappCount     int `json:"other_dapp_count"`
+        SaleLaunchpadCount int `json:"sale_launchpad_count"`
+        StartupCount       int `json:"startup_count"`
+    }
+
+    LanguageResponse {
+        Id   int    `json:"id"`
+        ComerId int `json:"comer_id"`
+        Code string `json:"code"`
+        Language string `json:"language"`
+        Level int `json:"level"`
+        IsNative bool `json:"is_native"`
+    }
+
+    ShareSetResponse {
+        ShareCode string `json:"share_code"`
+    }
+
+    JwtAuthorizationResponse {
+        Token string `json:"token"`
+    }
+
+    WalletNonceResponse {
+        Nonce string `json:"nonce"`
+    }
+
+    ListResponse {
+        Page  int64         `json:"page"`
+        Size  int64         `json:"size"`
+        Total int64         `json:"total"`
+        List  []TagResponse `json:"list"`
+    }
+
+    ComerLoginResponse {
+        ComerID       uint64                     `json:"comerID"`
+        Nick          string                     `json:"nick"`
+        Avatar        string                     `json:"avatar"`
+        Address       string                     `json:"address"`
+        Token         string                     `json:"token"`
+        IsProfiled    bool                       `json:"isProfiled"`
+        FirstLogin    bool                       `json:"firstLogin"`
+        ComerAccounts []*OauthAccountBindingInfo `json:"comerAccounts"`
+    }
+
+    OauthAccountBindingInfo {
+        Linked      bool             `json:"linked"`
+        AccountType int              `json:"accountType"`
+        AccountId   uint64           `json:"accountId"`
+    }
+
+)
+
+
+type(
+    EthLoginRequest{
+        Address   string `json:"address" binding:"len=42,startswith=0x"`
+	    Signature string `json:"signature" binding:"required"`
+    }
+
+    GetNonceByAddressRequest {
+        WalletAddress string `path:"wallet_address"`
+    }
+
+    UpdateComerInfoBioRequest {
+        Bio string `json:"bio" binding:"required"`
+    }
+
+    UpdateComerInfoRequest {
+        ComerId    int64  `json:"comer_id"`
+        Name       string `json:"name"`
+        Avatar     string `json:"avatar"`
+        Cover      string `json:"cover"`
+        Location   string `json:"location"`
+        TimeZone   string `json:"time_zone"`
+        Website    string `json:"website"`
+        Email      string `json:"email"`
+        Twitter    string `json:"twitter"`
+        Discord    string `json:"discord"`
+        Telegram   string `json:"telegram"`
+        Medium     string `json:"medium"`
+        Facebook   string `json:"facebook"`
+        Linktree   string `json:"linktree"`
+        Bio        string `json:"bio"`
+        Languages  []LanguageResponse `json:"languages"`
+        Skills     []ComerSkillResponse `json:"skills"`
+        Educations []ComerEducationResponse `json:"educations"`
+        Socials    []ComerSocialResponse `json:"socials"`
+    }
+
+    UnlinkOauthByComerAccountIdRequest {
+        ComerAccountId int64 `path:"comer_account_id" validate:"required,gte=0"`
+    }
+
+    UpdateComerEducationRequest {
+        ComerEducationId int64 `json:"comer_education_id"`
+        ComerId int64 `json:"comer_id"`
+        School string `json:"school"`
+        Degree string `json:"degree"`
+        Major string `json:"major"`
+        StartDate string `json:"start_date"`
+        EndDate string `json:"end_date"`
+        Description string `json:"description"`
+    }
+
+    UnbindComerEducationsRequest {
+        ComerEducationId int64 `path:"comer_education_id"`
+    }
+
+    BindComerEducationsRequest {
+        ComerId int64 `json:"comer_id"`
+        School string `json:"school" binding:"required"`
+        Degree string `json:"degree"`
+        Major string `json:"major" binding:"required"` 
+        StartDate string `json:"start_date"`
+        EndDate string `json:"end_date"`
+        Description string `json:"description"`
+    }
+
+    BindComerLanguagesRequest{
+        ComerId int64 `json:"comer_id"`
+        Language string `json:"language" binding:"required"`
+        Code string `json:"code"`
+        Level int `json:"level"`
+        IsNative bool `json:"is_native"`
+    }
+
+    UpdateComerLanguagesRequest{
+        ComerLanguageId int64 `path:"comer_language_id" validate:"required,gte=0"`
+        ComerId int64 `json:"comer_id"`
+        Language string `json:"language" binding:"required"`
+        Code string `json:"code"`
+        Level int `json:"level"`
+        IsNative bool `json:"is_native"`
+    }
+
+    UnbindComerLanguagesRequest{
+        ComerLanguageId int64 `path:"comer_language_id" validate:"required,gte=0"`
+    }
+
+    BindComerSkillsRequest{
+        ComerId int64 `json:"comer_id"`
+        SkillName string `json:"skill_name" binding:"required"` 
+        Level int `json:"level"`
+        Years int `json:"years"`
+        Description string `json:"description"`
+    }   
+
+    UpdateComerSkillsRequest{
+        ComerSkillId int64 `path:"comer_skill_id" validate:"required,gte=0"`
+        ComerId int64 `json:"comer_id"`
+        SkillName string `json:"skill_name"`
+        Level int `json:"level"`
+        Years int `json:"years"`
+        Description string `json:"description"`
+    }
+
+    UnbindComerSkillsRequest{
+        ComerSkillId int64 `path:"comer_skill_id" validate:"required,gte=0"`
+    }
+
+    BindComerSocialsRequest{
+        ComerId int64 `json:"comer_id"`
+        PlatformName string `json:"platform_name"`
+        UserName string `json:"user_name"`
+        PlatformId string `json:"platform_id"`
+        Url string `json:"url"`
+        IsVerified bool `json:"is_verified"`
+    }
+    
+    UpdateComerSocialsRequest{
+        ComerSocialId int64 `path:"comer_social_id" validate:"required,gte=0"`
+        ComerId int64 `json:"comer_id"`
+        PlatformName string `json:"platform_name"`
+        UserName string `json:"user_name"`
+        PlatformId string `json:"platform_id"`
+        Url string `json:"url"`
+        IsVerified bool `json:"is_verified"`
+    }
+    
+    UnbindComerSocialsRequest{
+        ComerSocialId int64 `path:"comer_social_id" validate:"required,gte=0"`
+    }
+
+    GetTagsByTagTypeRequest {
+        Type int `path:"type"`
+    }
+
+    SetUserCustomDomainRequest {
+        CustomDomain string `json:"custom_domain" binding:"required"`
+    }
+    GetComerByAddressRequest {
+        Address string `path:"address" binding:"required"`
+    }
+
+    GetUserCustomDomainExistenceRequest {
+        CustomDomain string `path:"custom_domain" binding:"required"`
+    }
+
+    GetUserCustomDomainRequest {
+        CustomDomain string `path:"custom_domain" binding:"required"`
+    }
+
+    GetComerByComerIdRequest {
+        ComerId int64 `path:"comer_id" binding:"required"`
+    }
+    GetComerBeConnectComersByComerIdRequest {
+        ComerId int64 `path:"comer_id" binding:"required"`
+    }
+    ConnectComerRequest {
+        ComerId int64 `path:"comer_id" binding:"required"`
+    }
+
+    UnconnectComerRequest {
+        ComerId int64 `path:"comer_id" binding:"required"`
+    }
+
+    GetComerConnectComersByComerIdRequest {
+        ComerId int64 `path:"comer_id" binding:"required"`
+    }
+
+    GetComerConnectStartupsByComerIdRequest {
+        ComerId int64 `path:"comer_id" binding:"required"`
+    }
+
+    GetConnectedComerRequest {
+        ComerId int64 `path:"comer_id" binding:"required"`
+    }
+    GetComerInfoDetailByComerIdRequest {
+        ComerId int64 `path:"comer_id" binding:"required"`
+    }
+
+    GetComerParticipatedCountByComerIdRequest {
+        ComerId int64 `path:"comer_id" binding:"required"`
+    }
+
+    GetComerPostedCountByComerIdRequest {
+        ComerId int64 `path:"comer_id" binding:"required"`
+    }
+    
+
+)

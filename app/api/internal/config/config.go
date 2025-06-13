@@ -10,8 +10,16 @@ type Config struct {
 	DB struct {
 		DataSource string
 	}
-	Auth struct {
-		AccessSecret string
-		AccessExpire int64
+	JWT struct {
+		Secret  string
+		Expired int64
+	}
+	Minio struct {
+		Bucket string
+	}
+	Redis struct {
+		Host     string
+		Password string
+		DB       int
 	}
 }

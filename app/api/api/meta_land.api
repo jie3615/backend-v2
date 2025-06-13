@@ -1,0 +1,6 @@
+syntax = "v1"
+
+import "startup/startup.api"
+import "bounty/bounty_service.api"
+import "user/user_service.api"
+import "chain/chain_service.api"

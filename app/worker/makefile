@@ -21,10 +21,10 @@ endif
 ifndef CHECK_GOCTL
 	$(error "goctl is not available, please install it")
 endif
-	$(GOCTL) rpc protoc ./pb/meta_land_worker.proto --go_out=./pb --go-grpc_out=./pb --zrpc_out=.
+	$(GOCTL) rpc protoc ./pb/meta_land_worker.proto --go_out=./pb --go-grpc_out=./pb --zrpc_out=. --style=go_zero
 
 # 清理生成的文件
 clean:
-	$(RM) metalandworker.go
+	$(RM) metaland_worker.go
 	$(RMDIR) metalandworker
 	$(RM) etc/metalandworker.yaml

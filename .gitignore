@@ -1,1 +1,4 @@
 logs
+app/sync/config/config.yaml
+app/sync/config/meta_land_default.yaml
+launch.json

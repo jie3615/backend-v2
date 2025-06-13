@@ -1,0 +1,21 @@
+syntax = "v1"
+import "base.api"
+@server(
+    group: bounty
+    prefix: api/bounty
+    middleware: OIDCAuthMiddleware
+)
+
+service metaLand {
+    @doc "查询bounty列表"
+    @handler ListBounties
+    post /bounties (ListBountiesRequest) returns (ListBountiesResponse)
+
+    @doc "查询bounty详情"
+    @handler DetailBounty
+    get /detail (DetailRequest) returns (BountyInfoResponse)
+
+    @doc "创建bounty"
+    @handler CreateBounty
+    post /bounty (CreateBountyRequest) returns (CreateBountyResponse)
+}

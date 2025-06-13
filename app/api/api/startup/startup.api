@@ -1,5 +1,7 @@
 syntax = "v1"
 
+import "./base.api"
+
 @server(
     group: startup
     prefix: api/startup
@@ -7,79 +9,33 @@ syntax = "v1"
 )
 
 service metaLand {
+    // --------------------- 查询项目列表 ---------------------
     @doc "查询项目列表"
     @handler ListStartups
     get /startups (ListStartupsRequest) returns (ListStartupsResponse)
+
+
+    // --------------------- 新增：判断项目是否存在 ---------------------
+    @doc "判断项目是否存在"
+    @handler CheckStartupExists
+    get /check-exists (CheckStartupExistsRequest) returns (CheckStartupExistsResponse)
+
+
+    // --------------------- 获取项目详情 ---------------------
+    @doc "获取项目详情"
+    @handler GetStartupInfo
+    get /getInfo (GetStartupInfoRequest) returns (StartupInfoResponse)
+
+
+    // --------------------- 创建项目 ---------------------
+    @doc "创建项目"
+    @handler CreateStartups
+    post /create-startup (CreateStartupsRequest) returns (CreateStartupsResponse)
+
+
+    // --------------------- 更新项目 ---------------------
+    @doc "更新项目"
+    @handler UpdateStartups
+    post /update-startup (UpdateStartupsRequest) returns (UpdateStartupsResponse)
 }
 
-type (
-    ListStartupsRequest {
-        Limit int `json:"limit"`
-        Offset int `json:"offset"`
-        IsDeleted bool `json:"isDeleted"`
-        Keyword string `json:"keyword"`
-        Mode uint8 `json:"mode"`
-    }
-
-    Wallet {
-        Address string `json:address`
-    }
-
-    FollowRelation {
-        ComerID uint64 `json:comerID`
-    }
-
-    Tag {
-        Name string `json:"name"`
-        Category string `json:"category"`
-        IsIndex bool `json:"isIndex"`
-    }
-
-    StartupTeamMember {
-        ComerID uint64 `json:"comerID"`
-        StartupID uint64 `json:"startupID"`
-        Position string `json:"position"`
-        Comer string `json:"comer"`
-        FollowedByMe bool `json:"followedByMe"`
-    }
-
-    Startup {
-        ComerID uint64 `json:"comerID" db:"comer_id"`
-        Name string `json:"name" db:"name"`
-        Mode uint8 `json:"mode" db:"mode"`
-        Logo string `json:"logo" db:"logo"`
-        Cover string `json:"cover" db:"cover"`
-        Mission string `json:"mission" db:"mission"`
-        TokenContractAddress string `json:"tokenContractAddress" db:"token_contract_address"`
-        Overview string `json:"overview" db:"overview"`
-        ChainID uint64 `json:"chainID" db:"chain_id"`
-        TxHash string `json:"blockChainAddress" db:"tx_hash"`
-        OnChain bool `json:"onChain" db:"on_chain"`
-        KYC string `json:"kyc" db:"kyc"`
-        ContractAudit string `json:"contractAudit" db:"contract_audit"`
-//        Website string `json:"website"`
-//        Discord string `json:"discord"`
-//        Twitter string `json:"twitter"`
-//        Telegram string `json:"telegram"`
-//        Docs string `json:"docs"`
-//        Email string `json:"email"`
-//        Facebook string `json:"facebook"`
-//        Medium string `json:"medium"`
-//        Linktree string `json:"linktree"`
-//        LaunchNetwork int `json:"launchNetwork"`
-//        TokenName string `json:"tokenName"`
-//        TokenSymbol string `json:"tokenSymbol"`
-//        TotalSupply int64 `json:"totalSupply"`
-//        PresaleStart string `json:"presaleStart"`
-//        PresaleEnd string `json:"presaleEnd"`
-//        LaunchDate string `json:"launchDate"`
-//        TabSequence string `json:"tabSequence"`
-//        MemberCount int `json:"memberCount"`
-//        FollowCount int `json:"followCount"`
-    }
-
-    ListStartupsResponse {
-        List []*Startup `json:list`
-        Total int `json: total`
-    }
-)
